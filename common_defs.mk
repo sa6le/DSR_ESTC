@@ -31,6 +31,7 @@ INCLUDE_DIRS += -I$(BUILD_ROOT)/common/include
 #                                  C Defines                                  #
 ###############################################################################
 DEFINES += -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx -DHSE_VALUE=8000000
+DEFINES += -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx -DHSI_VALUE=16000000
 
 ###############################################################################
 #                                   C Flags                                   #
