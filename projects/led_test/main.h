@@ -1,18 +1,17 @@
-#ifndef LEDS_AND_BUTTON_H
-#define LEDS_AND_BUTTON_H
+#ifndef MAIN_H__
+#define MAIN_H__
 
 #include <stm32f4xx.h>
 
-/* #if defined (USE_STM324xG_EVAL) */
-/*   #include "stm324xg_eval.h" */
+/* PWM frequency */
+#define PWM_FREQUENCY_HZ      50
 
-/* #elif defined (USE_STM32F4DISC_EVAL) */
-/*   #include "stm32f4disc_eval.h" */
+void TIM2_IRQHandler(void);
 
-/* #else */
-/*  #error "Please select first the Evaluation board used in your application (in Project Options)" */
-/* #endif */
+void configure_leds(void);
+void configure_timers(void);
+void configure_interrupts(void);
+void configure_pwm(void);
+void start_timers(void);
 
-#include <math.h>
-
-#endif  /* LEDS_AND_BUTTON_H */
+#endif

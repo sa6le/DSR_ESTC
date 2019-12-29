@@ -1,39 +1,40 @@
 #include "main.h"
 
-#define SWITCH_DELAY 100000
+#include <math.h>
+
+uint32_t time;
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+
+        time++;
+        uint16_t period1    = 2000;
+        uint16_t period2    = 1500;
+        uint16_t period3    = 2200;
+
+        uint16_t pwm_value1 = (cos(time * 6.28 / period1) + 1) / 2.0f * (100000 / PWM_FREQUENCY_HZ - 1);
+        uint16_t pwm_value2 = (cos(time * 6.28 / period2 + 3) + 1) / 2.0f * (100000 / PWM_FREQUENCY_HZ - 1);
+        uint16_t pwm_value3 = (cos(time * 6.28 / period3 - 10) + 1) / 2.0f * (100000 / PWM_FREQUENCY_HZ - 1);
+
+        TIM_SetCompare1(TIM1, pwm_value1);
+        TIM_SetCompare2(TIM1, pwm_value2);
+        TIM_SetCompare3(TIM1, pwm_value3);
+    }
+}
 
 int main(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
+    time = 0;
 
-  /* LEDs array to toggle between them */
-  /* LED to toggle during iteration */
-  uint8_t  current_led = 0;
+    configure_timers();
+    configure_interrupts();
+    configure_pwm();
 
-  /* Enable peripheral clock for LEDs port */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+    configure_leds();
+    start_timers();
 
-  /* Init LEDs */
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-  /* Turn all the leds off */
-  GPIO_SetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14);
-
-  while (1)
-  {
-    int i;
-
-    /* Switch the LED on */
-    GPIO_ResetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14);
-    for (i = 0; i < SWITCH_DELAY; i++);
-
-    /* Switch the LED off */
-    GPIO_SetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14);
-    for (i = 0; i < SWITCH_DELAY; i++);
-  }
+    for (;;);
 }

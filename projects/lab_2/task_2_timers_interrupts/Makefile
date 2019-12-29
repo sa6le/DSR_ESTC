@@ -1,4 +1,4 @@
-BUILD_ROOT=../..
+BUILD_ROOT=../../..
 OBJS = init.o main.o
 
 BINARY_NAME = main
